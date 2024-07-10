@@ -30,9 +30,9 @@ from picai_prep.examples.dcm2mha.sample_archive import \
 
 
 def test_dcm2mha(
-    input_dir: str = "tests/input/dcm/ProstateX",
-    output_dir: str = "tests/output/mha/ProstateX",
-    output_expected_dir: str = "tests/output-expected/mha/ProstateX",
+    input_dir: str = "input/dcm/ProstateX",
+    output_dir: str = "output/mha/ProstateX",
+    output_expected_dir: str = "output-expected/mha/ProstateX",
 ):
     """
     Convert sample DICOM archive to MHA
@@ -45,7 +45,7 @@ def test_dcm2mha(
     archive = Dicom2MHAConverter(
         input_dir=input_dir,
         output_dir=output_dir,
-        dcm2mha_settings="tests/output-expected/dcm2mha_settings.json"
+        dcm2mha_settings="output-expected/dcm2mha_settings.json"
     )
     archive.convert()
 
