@@ -15,6 +15,12 @@ Note: the [`MHA Archive` → `nnU-Net Raw Data Archive`][mha2nnunet] conversion 
 
 `pip install picai_prep`
 
+## Code Structure
+
+DICOM comprises of several folders, each folder represents a modality, such as T2W, ADC. Each folder is parsed by a 'Series'.
+
+
+
 ## Usage
 Our preprocessing pipeline consists of four independent stages: [`DICOM Archive`][dicom-archive] → [`MHA Archive`][mha-archive] → [`nnU-Net Raw Data Archive`][nnunet-archive] → [`nnDetection Raw Data Archive`][nndetection-archive]. All three conversion steps between these four stages can be performed independently. See below for documentation on each step.
 
