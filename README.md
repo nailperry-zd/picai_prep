@@ -17,8 +17,11 @@ Note: the [`MHA Archive` → `nnU-Net Raw Data Archive`][mha2nnunet] conversion 
 
 ## Code Structure
 
-DICOM comprises of several folders, each folder represents a modality, such as T2W, ADC. Each folder is parsed by a 'Series'.
+DICOM comprises of several folders, each folder represents a modality, such as T2W, ADC. Each folder is parsed by a `Series`.
 
+## Tips
+
+- When I ran the `test_dcm2mha` for the first time, I got the error that `file path not exists`. To solve this problem, first we need to run `os.getcwd()` to get the current dir, then we will have a idea whether the file path is correct.
 
 
 ## Usage
