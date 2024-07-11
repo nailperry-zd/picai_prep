@@ -30,6 +30,13 @@ from picai_prep.examples.mha2nnunet import picai_archive
 from picai_prep.mha2nnunet import MHA2nnUNetConverter
 from picai_prep.preprocessing import resample_to_reference_scan
 
+def test_setting_generating():
+    from picai_prep.examples.mha2nnunet.rstrial_archive import generate_nifti2nnunet_settings
+
+    generate_nifti2nnunet_settings(
+        archive_dir=r'C:\Users\dzha937\DEV\PICAI\RSTrial\preprocessing4nnunet\nifti',
+        annotations_dir=r'C:\Users\dzha937\DEV\PICAI\RSTrial\preprocessing4nnunet\annotations',
+        output_path = r"C:\Users\dzha937\DEV\PICAI\RSTrial\preprocessing4nnunet\output\nifti2nnunet_settings.json")
 
 def test_mha2nnunet(
     input_dir: PathLike = "output-expected/mha/ProstateX",

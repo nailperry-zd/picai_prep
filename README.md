@@ -42,9 +42,11 @@ DICOM comprises of several folders, each folder represents a modality, such as T
 - padding: maintain the input as central part and pad the surroundings.
 - crop: maintain the input as central part and remove the surroundings.
 
+4. the input files are not limited to `mha`, it also supports `nii.gz`, since `sitk.ReadImage` the SimpleITK (sitk) library supports reading a variety of medical image file formats, including both .mha (Meta Image) and .nii (Nifti) file formats.
+
 ## Tips
 
-- When I ran the `test_dcm2mha` for the first time, I got the error that `file path not exists`. To solve this problem, first we need to run `os.getcwd()` to get the current dir, then we will have a idea whether the file path is correct.
+- When I ran the `test_dcm2mha` for the first time, I got the error that `file path not exists`. To solve this problem, first we need to run `os.getcwd()` to get the current dir, then we will have an idea whether the file path is correct.
 
 
 ## Usage
