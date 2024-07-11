@@ -16,18 +16,7 @@
             "1": "lesion"
         }
     },
-    "preprocessing": {
-        "matrix_size": [
-            20,
-            160,
-            160
-        ],
-        "spacing": [
-            3.0,
-            0.5,
-            0.5
-        ]
-    },
+    "preprocessing": {},
     "archive": [
         {
             "patient_id": "ProstateX-0000",

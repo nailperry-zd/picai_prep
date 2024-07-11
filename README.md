@@ -48,6 +48,9 @@ DICOM comprises of several folders, each folder represents a modality, such as T
 
 - When I ran the `test_dcm2mha` for the first time, I got the error that `file path not exists`. To solve this problem, first we need to run `os.getcwd()` to get the current dir, then we will have an idea whether the file path is correct.
 
+- add a new feature: If you want to align other modalities to t2w,
+
+> set 'align_t2w = True', leave 'preprocessing in the json file empty'. 
 
 ## Usage
 Our preprocessing pipeline consists of four independent stages: [`DICOM Archive`][dicom-archive] → [`MHA Archive`][mha-archive] → [`nnU-Net Raw Data Archive`][nnunet-archive] → [`nnDetection Raw Data Archive`][nndetection-archive]. All three conversion steps between these four stages can be performed independently. See below for documentation on each step.

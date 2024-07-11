@@ -35,12 +35,14 @@ class PreprocessingSettings():
     - spacing: output voxel spacing in mm/voxel (z, y, x)
     - physical_size: size in mm of the target image (z, y, x)
     - crop_only: only crop to specified size (i.e., do not pad)
+    - align_t2w: Let other modalities use t2w's spacing and dimensions
     - align_segmentation: whether to align the scans using the centroid of the provided segmentation
     """
     matrix_size: Optional[Iterable[int]] = None
     spacing: Optional[Iterable[float]] = None
     physical_size: Optional[Iterable[float]] = None
     crop_only: bool = False
+    align_t2w: bool = False
     align_segmentation: Optional[sitk.Image] = None
 
     def __post_init__(self):
@@ -152,6 +154,8 @@ def input_verification_crop_or_pad(
         else:
             # verify size
             if list(size) != list(size_zyx):
+                print(f"Size and physical size do not match. Size: {size}, physical size: "
+                                 f"{physical_size}, spacing: {spacing_zyx}, size_zyx: {size_zyx}.")
                 raise ValueError(f"Size and physical size do not match. Size: {size}, physical size: "
                                  f"{physical_size}, spacing: {spacing_zyx}, size_zyx: {size_zyx}.")
 

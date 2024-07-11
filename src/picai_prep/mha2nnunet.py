@@ -123,6 +123,12 @@ class MHA2nnUNetCase(Case, _MHA2nnUNetCaseBase):
         scans = [sitk.ReadImage(path.as_posix()) for path in self.verified_scan_paths]
         lbl = sitk.ReadImage(self.annotation_path.as_posix()) if self.annotation_path else None
 
+        # insert code to set lbl as reference. Because lbl share the same spacing and size with t2w.
+        if lbl is not None and self.settings.preprocessing.align_t2w:
+            self.settings.preprocessing.spacing = lbl.GetSpacing()[::-1]
+            self.settings.preprocessing.matrix_size = lbl.GetSize()[::-1]
+
+
         # set up Sample
         sample = Sample(
             scans=scans,
@@ -328,6 +334,7 @@ class MHA2nnUNetConverter(Converter):
                 dataset_settings["numTest"] = 0
                 dataset_settings["test"] = []
 
+        print(f'dataset_path: {dataset_path}')
         with open(dataset_path, 'w') as fp:
             json.dump(dataset_settings, fp, indent=4)
 

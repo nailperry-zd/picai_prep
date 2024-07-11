@@ -38,6 +38,37 @@ def test_setting_generating():
         annotations_dir=r'C:\Users\dzha937\DEV\PICAI\RSTrial\preprocessing4nnunet\annotations',
         output_path = r"C:\Users\dzha937\DEV\PICAI\RSTrial\preprocessing4nnunet\output\nifti2nnunet_settings.json")
 
+def test_nifti2nnunet(
+    input_dir: PathLike = r'C:\Users\dzha937\DEV\PICAI\RSTrial\preprocessing4nnunet\nifti',
+    annotations_dir: PathLike = r'C:\Users\dzha937\DEV\PICAI\RSTrial\preprocessing4nnunet\annotations',
+    output_dir: PathLike = r"C:\Users\dzha937\DEV\PICAI\RSTrial\preprocessing4nnunet\output\nnUNet_raw_data",
+    output_expected_dir: PathLike = "output-expected/nnUNet_raw_data",
+    settings_path: PathLike = r"C:\Users\dzha937\DEV\PICAI\RSTrial\preprocessing4nnunet\output\nifti2nnunet_settings.json",
+    task_name: str = "Task001_rstrial_nnunet_v1",
+    subject_list: Optional[List[str]] = None,
+):
+
+    # convert input paths to Path
+    input_dir = Path(input_dir)
+    annotations_dir = Path(annotations_dir)
+    output_dir = Path(output_dir)
+    task_dir = output_dir / task_name
+
+    # remove output folder (to prevent skipping the conversion)
+    if os.path.exists(task_dir):
+        shutil.rmtree(task_dir)
+
+    # convert MHA archive to nnUNet raw data
+    archive = MHA2nnUNetConverter(
+        output_dir=output_dir.as_posix(),
+        scans_dir=input_dir.as_posix(),
+        annotations_dir=annotations_dir.as_posix(),
+        mha2nnunet_settings=settings_path
+    )
+    archive.convert()
+    archive.create_dataset_json()
+
+
 def test_mha2nnunet(
     input_dir: PathLike = "output-expected/mha/ProstateX",
     annotations_dir: PathLike = "input/annotations/ProstateX",
