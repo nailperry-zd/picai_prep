@@ -32,11 +32,11 @@ from picai_prep.preprocessing import resample_to_reference_scan
 
 
 def test_mha2nnunet(
-    input_dir: PathLike = "tests/output-expected/mha/ProstateX",
-    annotations_dir: PathLike = "tests/input/annotations/ProstateX",
-    output_dir: PathLike = "tests/output/nnUNet_raw_data",
-    output_expected_dir: PathLike = "tests/output-expected/nnUNet_raw_data",
-    settings_path: PathLike = "tests/output-expected/mha2nnunet_settings.json",
+    input_dir: PathLike = "output-expected/mha/ProstateX",
+    annotations_dir: PathLike = "input/annotations/ProstateX",
+    output_dir: PathLike = "output/nnUNet_raw_data",
+    output_expected_dir: PathLike = "output-expected/nnUNet_raw_data",
+    settings_path: PathLike = "output-expected/mha2nnunet_settings.json",
     task_name: str = "Task100_test",
     subject_list: Optional[List[str]] = None,
 ):

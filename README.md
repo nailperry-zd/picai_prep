@@ -17,7 +17,30 @@ Note: the [`MHA Archive` → `nnU-Net Raw Data Archive`][mha2nnunet] conversion 
 
 ## Code Structure
 
+### test_dcm2mha
+
 DICOM comprises of several folders, each folder represents a modality, such as T2W, ADC. Each folder is parsed by a `Series`.
+
+### test_mha2nnunet
+
+#### How is the resampling done?
+
+1. I check the input dir to see the spacing parameters for each modality.
+
+> SimpleITK (x, y, z) or numpy (z, y, x)
+
+- t2w: 384x384x19 0.5mmx0.5mmx3mm
+- adc: 84x128x19 2mmx2mmx3mm
+- hbv: 84x128x19 2mmx2mmx3mm
+- label: 384x384x19 0.5mmx0.5mmx3mm
+
+2. go open `mha2nnunet_settings.json`, I can find the target dimensions: 20x160x160 spacing: 3.0x0.5x0.5.
+
+
+3. locate the core code `Sample`. The core code for cropping or padding is here `crop_or_pad`.
+
+- padding: maintain the input as central part and pad the surroundings.
+- crop: maintain the input as central part and remove the surroundings.
 
 ## Tips
 
