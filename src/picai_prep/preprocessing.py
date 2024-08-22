@@ -69,6 +69,14 @@ class PreprocessingSettings():
         if self.align_segmentation is not None:
             raise NotImplementedError("Alignment of scans based on segmentation is not implemented yet.")
 
+def is_image_label(image, is_label = False):
+    numpy_array = sitk.GetArrayFromImage(image)
+    checked_label = np.unique(numpy_array).size < 5
+    if not (checked_label == is_label):
+        print(f'is_label is changed to True for volume with unique value num = {np.unique(numpy_array).size}')
+    else:
+        print(f'unique value num = {np.unique(numpy_array).size}')
+    return checked_label
 
 def resample_img(
     image: sitk.Image,
@@ -81,6 +89,7 @@ def resample_img(
     Resample images to target resolution spacing
     Ref: SimpleITK
     """
+    is_label = is_image_label(image, is_label)
     # get original spacing and size
     original_spacing = image.GetSpacing()
     original_size = image.GetSize()
@@ -254,10 +263,17 @@ class Sample:
         # set up resampler to resolution, field of view, etc. of first scan
         resampler = sitk.ResampleImageFilter()  # default linear
         resampler.SetReferenceImage(self.scans[0])
-        resampler.SetInterpolator(sitk.sitkBSpline)
+        # resampler.SetInterpolator(sitk.sitkBSpline)
 
         # resample other images
-        self.scans[1:] = [resampler.Execute(scan) for scan in self.scans[1:]]
+        # self.scans[1:] = [resampler.Execute(scan) for scan in self.scans[1:]]
+        for i in range(1, len(self.scans)):
+            is_label = is_image_label(self.scans[i])
+            if is_label:
+                resampler.SetInterpolator(sitk.sitkNearestNeighbor)
+            else:
+                resampler.SetInterpolator(sitk.sitkBSpline)
+            self.scans[i] = resampler.Execute(self.scans[i])
 
         # resample annotation
         resampler.SetInterpolator(sitk.sitkNearestNeighbor)
