@@ -52,6 +52,10 @@ DICOM comprises of several folders, each folder represents a modality, such as T
 
 > set 'align_t2w = True', leave 'preprocessing in the json file empty'. 
 
+- add a new feature to support zonal mask as extra input channel.
+
+> masks and other volumes should be separated when doing resampling. For masks, using nearest interpolation.
+
 ## Usage
 Our preprocessing pipeline consists of four independent stages: [`DICOM Archive`][dicom-archive] → [`MHA Archive`][mha-archive] → [`nnU-Net Raw Data Archive`][nnunet-archive] → [`nnDetection Raw Data Archive`][nndetection-archive]. All three conversion steps between these four stages can be performed independently. See below for documentation on each step.
 
