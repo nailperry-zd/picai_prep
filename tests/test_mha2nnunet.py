@@ -39,12 +39,12 @@ def test_setting_generating():
         output_path = r"C:\Users\dzha937\DEV\PICAI\RSTrial\preprocessing4nnunet\output\nifti2nnunet_settings.json")
 
 def test_nifti2nnunet(
-    input_dir: PathLike = r'C:\Users\dzha937\DEV\PICAI\RSTrial\preprocessing4nnunet\nifti',
-    annotations_dir: PathLike = r'C:\Users\dzha937\DEV\PICAI\RSTrial\preprocessing4nnunet\annotations',
-    output_dir: PathLike = r"C:\Users\dzha937\DEV\PICAI\RSTrial\preprocessing4nnunet\output\nnUNet_raw_data",
+    input_dir: PathLike = r"Y:\prostatex_recollected\input\images",
+    annotations_dir: PathLike = r"Y:\prostatex_recollected\input\human_expert\original-T2",
+    output_dir: PathLike = r"Y:\prostatex_recollected\workdir\nnUNet_raw_data",
     output_expected_dir: PathLike = "output-expected/nnUNet_raw_data",
-    settings_path: PathLike = r"C:\Users\dzha937\DEV\PICAI\RSTrial\preprocessing4nnunet\output\nifti2nnunet_settings.json",
-    task_name: str = "Task001_rstrial_nnunet_v1",
+    settings_path: PathLike = r"Y:\prostatex_recollected\workdir\mha2nnunet_settings\Dataset402_ProstatexRecollected_completed.json",
+    task_name: str = "Dataset402_ProstatexRecollected",
     subject_list: Optional[List[str]] = None,
 ):
 
