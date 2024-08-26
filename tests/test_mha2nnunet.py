@@ -405,4 +405,5 @@ def test_resample_to_reference_scan(
 
 
 if __name__ == "__main__":
-    test_resample_to_reference_scan("ProstateX-0001_07-08-2011")
+    # test_resample_to_reference_scan("ProstateX-0001_07-08-2011")
+    test_nifti2nnunet()
