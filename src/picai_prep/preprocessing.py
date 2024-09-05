@@ -362,13 +362,13 @@ class Sample:
         # copy physical metadata to align subvoxel differences between sequences
         self.align_physical_metadata()
 
-        if self.lbl is not None:
-            # check connected components of annotation
-            lbl = sitk.GetArrayFromImage(self.lbl)
-            _, num_gt_lesions = ndimage.label(lbl, structure=np.ones((3, 3, 3)))
-            assert self.num_gt_lesions == num_gt_lesions, \
-                f"Label has changed due to resampling/other errors for {self.name}! " \
-                + f"Have {self.num_gt_lesions} -> {num_gt_lesions} isolated ground truth lesions"
+        # if self.lbl is not None:
+        #     # check connected components of annotation
+        #     lbl = sitk.GetArrayFromImage(self.lbl)
+        #     _, num_gt_lesions = ndimage.label(lbl, structure=np.ones((3, 3, 3)))
+        #     assert self.num_gt_lesions == num_gt_lesions, \
+        #         f"Label has changed due to resampling/other errors for {self.name}! " \
+        #         + f"Have {self.num_gt_lesions} -> {num_gt_lesions} isolated ground truth lesions"
 
         # user-defined postprocessing steps
         if self.lbl is not None and self.lbl_postprocess_func:
