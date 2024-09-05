@@ -185,7 +185,7 @@ def input_verification_crop_or_pad(
 
 
 def crop_or_pad(
-    image: "Union[sitk.Image, npt.NDArray[Any]]",
+    image: "Union[sitk.Image, npt.NDArray[Any]]", idx_start, idx_end,
     size: Optional[Iterable[int]] = (20, 256, 256),
     physical_size: Optional[Iterable[float]] = None,
     crop_only: bool = False,
@@ -213,18 +213,18 @@ def crop_or_pad(
 
     # for each dimension, determine process (cropping or padding)
     for i in range(rank):
-        if shape[i] < size[i]:
-            if crop_only:
-                continue
-
-            # set padding settings
-            padding[i][0] = (size[i] - shape[i]) // 2
-            padding[i][1] = size[i] - shape[i] - padding[i][0]
-        else:
+        # if shape[i] < size[i]:
+        #     if crop_only:
+        #         continue
+        #
+        #     # set padding settings
+        #     padding[i][0] = (size[i] - shape[i]) // 2
+        #     padding[i][1] = size[i] - shape[i] - padding[i][0]
+        # else:
             # create slicer object to crop image
-            idx_start = int(np.floor((shape[i] - size[i]) / 2.))
-            idx_end = idx_start + size[i]
-            slicer[i] = slice(idx_start, idx_end)
+            # idx_start = int(np.floor((shape[i] - size[i]) / 2.))
+            # idx_end = idx_start + size[i]
+        slicer[i] = slice(idx_start[i], idx_end[i])
 
     # crop and/or pad image
     if isinstance(image, sitk.Image):
@@ -303,13 +303,30 @@ class Sample:
             "physical_size": self.settings.physical_size,
             "crop_only": self.settings.crop_only,
         }
+        mask = sitk.GetArrayFromImage(self.scans[-1])
+        # calculate cropping loc based on zonal mask, enlarge it a little bit
+        # Get the shape of the data (z, y, x)
+
+        # Calculate the max and min indices of non-zero voxels along the x-axis
+        non_zero_x = np.any(mask != 0, axis=(0, 1))  # Check for non-zero along y and z
+        max_x = np.max(np.where(non_zero_x))
+        min_x = np.min(np.where(non_zero_x))
+
+        # Calculate the max and min indices of non-zero voxels along the y-axis
+        non_zero_y = np.any(mask != 0, axis=(0, 2))  # Check for non-zero along x and z
+        max_y = np.max(np.where(non_zero_y))
+        min_y = np.min(np.where(non_zero_y))
+        enlarge_N = 10
+        idx_start = [max(0, min_x - enlarge_N), max(0, min_y - enlarge_N), 0]
+        max_slice = mask.shape[0]
+        idx_end = [min(max_x + enlarge_N, mask.shape[2]), min(max_y + enlarge_N, mask.shape[1]), max_slice]
         self.scans = [
-            crop_or_pad(scan, **kwargs)
+            crop_or_pad(scan, idx_start, idx_end, **kwargs)
             for scan in self.scans
         ]
 
         if self.lbl is not None:
-            self.lbl = crop_or_pad(self.lbl, **kwargs)
+            self.lbl = crop_or_pad(self.lbl, idx_start, idx_end, **kwargs)
 
     def align_physical_metadata(self, check_almost_equal=True):
         """Align the origin and direction of each scan, and label"""
@@ -352,12 +369,12 @@ class Sample:
             # resample scans and label to specified spacing
             self.resample_spacing()
 
-        if self.settings.matrix_size is not None or self.settings.physical_size is not None:
-            # perform centre crop and/or pad
-            self.centre_crop_or_pad()
-
         # resample scans and label to first scan's spacing, field-of-view, etc.
         self.resample_to_first_scan()
+
+        # if self.settings.matrix_size is not None or self.settings.physical_size is not None:
+        # perform centre crop and/or pad
+        self.centre_crop_or_pad()
 
         # copy physical metadata to align subvoxel differences between sequences
         self.align_physical_metadata()
