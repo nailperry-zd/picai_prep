@@ -374,7 +374,7 @@ class Sample:
 
         # if self.settings.matrix_size is not None or self.settings.physical_size is not None:
         # perform centre crop and/or pad
-        self.centre_crop_or_pad()
+        # self.centre_crop_or_pad()
 
         # copy physical metadata to align subvoxel differences between sequences
         self.align_physical_metadata()
