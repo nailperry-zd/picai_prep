@@ -48,6 +48,10 @@ mha2nnunet_schema = {
                     "description": "Target matrix size in voxels (z, y, x). Automatically calculated if `physical_size` and `spacing` are set.",
                     "$ref": "#/$defs/3d"
                 },
+                "mask_channel_indexes": {
+                    "description": "Treat these input channels as groundtruth label, keep the pattern intact",
+                    "$ref": "#/$defs/xd"
+                },
                 "spacing": {
                     "description": "Target resolution in mm/voxel (z, y, x). Automatically calculated if `physical_size` and `matrix_size` are set.",
                     "$ref": "#/$defs/3d"
@@ -115,6 +119,14 @@ mha2nnunet_schema = {
         "dataset_json"
     ],
     "$defs": {
+        "xd": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 10,
+            "items": {
+                "type": "number"
+            }
+        },
         "3d": {
             "type": "array",
             "minItems": 3,

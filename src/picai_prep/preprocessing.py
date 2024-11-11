@@ -43,6 +43,7 @@ class PreprocessingSettings():
     physical_size: Optional[Iterable[float]] = None
     crop_only: bool = False
     align_t2w: bool = False
+    mask_channel_indexes: Optional[Iterable[int]] = None
     align_segmentation: Optional[sitk.Image] = None
 
     def __post_init__(self):
@@ -69,14 +70,8 @@ class PreprocessingSettings():
         if self.align_segmentation is not None:
             raise NotImplementedError("Alignment of scans based on segmentation is not implemented yet.")
 
-def is_image_label(image, is_label = False):
-    numpy_array = sitk.GetArrayFromImage(image)
-    checked_label = np.unique(numpy_array).size < 5
-    if not (checked_label == is_label):
-        print(f'is_label is changed to True for volume with unique value num = {np.unique(numpy_array).size}')
-    else:
-        print(f'unique value num = {np.unique(numpy_array).size}')
-    return checked_label
+        if self.mask_channel_indexes is None:
+            self.mask_channel_indexes = []
 
 def resample_img(
     image: sitk.Image,
@@ -89,7 +84,6 @@ def resample_img(
     Resample images to target resolution spacing
     Ref: SimpleITK
     """
-    is_label = is_image_label(image, is_label)
     # get original spacing and size
     original_spacing = image.GetSpacing()
     original_size = image.GetSize()
@@ -268,7 +262,7 @@ class Sample:
         # resample other images
         # self.scans[1:] = [resampler.Execute(scan) for scan in self.scans[1:]]
         for i in range(1, len(self.scans)):
-            is_label = is_image_label(self.scans[i])
+            is_label = i in self.settings.mask_channel_indexes
             if is_label:
                 resampler.SetInterpolator(sitk.sitkNearestNeighbor)
             else:
@@ -286,10 +280,11 @@ class Sample:
             assert self.settings.spacing is not None
             spacing = self.settings.spacing
 
+        mask_channel_indexes = self.settings.mask_channel_indexes
         # resample scans to target resolution
         self.scans = [
-            resample_img(scan, out_spacing=spacing, is_label=False)
-            for scan in self.scans
+            resample_img(scan, out_spacing=spacing, is_label=index in mask_channel_indexes)
+            for index, scan in enumerate(self.scans)
         ]
 
         # resample annotation to target resolution
@@ -316,7 +311,10 @@ class Sample:
         non_zero_y = np.any(mask != 0, axis=(0, 2))  # Check for non-zero along x and z
         max_y = np.max(np.where(non_zero_y))
         min_y = np.min(np.where(non_zero_y))
-        enlarge_N = 10
+        spacing = self.scans[0].GetSpacing()
+        MARGIN = 4 # in mm
+        enlarge_N = int(np.ceil(MARGIN / spacing[1]))
+        # enlarge_N = 8
         idx_start = [max(0, min_x - enlarge_N), max(0, min_y - enlarge_N), 0]
         max_slice = mask.shape[0]
         idx_end = [min(max_x + enlarge_N, mask.shape[2]), min(max_y + enlarge_N, mask.shape[1]), max_slice]
@@ -374,7 +372,7 @@ class Sample:
 
         # if self.settings.matrix_size is not None or self.settings.physical_size is not None:
         # perform centre crop and/or pad
-        self.centre_crop_or_pad()
+        # self.centre_crop_or_pad()
 
         # copy physical metadata to align subvoxel differences between sequences
         self.align_physical_metadata()
